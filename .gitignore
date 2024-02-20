@@ -161,3 +161,4 @@ cython_debug/
 
 # ingnore credentials
 7placebot/credentials.txt
+credentials.txt
