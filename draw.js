@@ -146,6 +146,40 @@ function colorAssociation(color) {
             return "blue";
         case "#00CCC0":
             return "aqua";
+        case "#FFB470":
+            return "tan";
+        case "#9C6927":
+            return "brown";
+        case "#BE0039":
+            return "red";
+        case "#FF4500":
+            return "orange";
+        case "#FFA800":
+            return "sun";
+        case "#FDD636":
+            return "yellow";
+        case "#7EED56":
+            return "lime";
+        case "#219200":
+            return "green";
+        case "#811E9F":
+            return "purple";
+        case "#FD90DA":
+            return "pink";
+        case "#D4D7D9":
+            return "light_gray";
+        case "#898D90":
+            return "gray";
+        case "#FFFFFF":
+            return "white";
+        case "#CB3234":
+            return "pure_red";
+        case "#A18594":
+            return "pastel_violet";
+        case "#015D52":
+            return "opal_green";
+        case "#ED760E":
+            return "yellow_orange";
         default:
             return "unknown";
     }
