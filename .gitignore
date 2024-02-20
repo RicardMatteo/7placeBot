@@ -164,4 +164,5 @@ cython_debug/
 credentials.txt
 
 # ignore nix build artifacts
+result
 result/
