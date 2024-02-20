@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "7placebot"
+name = "r7placebot"
 version = "0.1.0"
 description = ""
 authors = ["Mattéo Ricard <ricardm@bde.enseeiht.fr>"]
@@ -9,6 +9,8 @@ readme = "README.md"
 python = "^3.11"
 helium = "^5.0.0"
 
+[tool.poetry.scripts]
+r7placebot = "r7placebot:main"
 
 [build-system]
 requires = ["poetry-core"]
