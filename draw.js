@@ -1,3 +1,29 @@
+//colors hashmap
+const colors = new Map([
+    ["#000000", "black"],
+    ["#0F5AA6", "blue"],
+    ["#00CCC0", "aqua"],
+    ["#FFB470", "tan"],
+    ["#9C6927", "brown"],
+    ["#BE0039", "red"],
+    ["#FF4500", "orange"],
+    ["#FFA800", "sun"],
+    ["#FDD636", "yellow"],
+    ["#7EED56", "lime"],
+    ["#219200", "green"],
+    ["#811E9F", "purple"],
+    ["#FD90DA", "pink"],
+    ["#D4D7D9", "light_gray"],
+    ["#898D90", "gray"],
+    ["#FFFFFF", "white"],
+    ["#CB3234", "pure_red"],
+    ["#A18594", "pastel_violet"],
+    ["#015D52", "opal_green"],
+    ["#ED760E", "yellow_orange"]
+]);
+
+
+
 // Add content scripts to the page
 var scriptElement = document.createElement('script');
 
@@ -60,6 +86,10 @@ async function getPixelInfo(coord_x, coord_y) {
 async function canPlace(x, y) {
     const pixelInfo = await getPixelInfo(x + offset_x, y + offset_y);
     const color = colorsMatrix[y-1][x-1];
+    if (!colors.has(color.toUpperCase())) {
+        console.log("Couleur non reconnue : ", color);
+        return false;
+    }
     return pixelInfo && !pixelInfo.isSticked && pixelInfo.color.toUpperCase() !== color.toUpperCase();
 }
 
@@ -77,11 +107,16 @@ async function getAllPixels() {
 // Calculate the difference between the current matrix and the colors matrix
 async function caclDiff(currentMatrix) {
     var diff = [];
+    var ignore = 0;
     for (var i = 1; i <  Math.min(height+1, dimm - offset_y+1) ; i++) {
         for (var j = 1; j < Math.min(width+1, dimm - offset_x+1); j++) {
             try {
-                if (currentMatrix[offset_y + i][offset_x + j].toUpperCase() !== colorsMatrix[i-1][j-1].toUpperCase()) {
-                    diff.push({i, j});
+                if (colors.has(colorsMatrix[i-1][j-1].toUpperCase())) {
+                    if (currentMatrix[offset_y + i][offset_x + j].toUpperCase() !== colorsMatrix[i-1][j-1].toUpperCase()) {
+                        diff.push({i, j});
+                    }
+                } else {
+                    ignore++;
                 }
             }
             catch (e) {
@@ -89,7 +124,7 @@ async function caclDiff(currentMatrix) {
             }
         }
     }
-    const perCent = 100 - (diff.length / (height * width)) * 100;
+    const perCent = 100 - (diff.length / (height * width - ignore)) * 100;
     console.log("Pourcentage : ", perCent);
     return diff;
 }
@@ -139,92 +174,20 @@ async function draw() {
 
 // Convert a color to a string
 function colorAssociation(color) {
-    switch (color.toUpperCase()) {
-        case "#000000":
-            return "black";
-        case "#0F5AA6":
-            return "blue";
-        case "#00CCC0":
-            return "aqua";
-        case "#FFB470":
-            return "tan";
-        case "#9C6927":
-            return "brown";
-        case "#BE0039":
-            return "red";
-        case "#FF4500":
-            return "orange";
-        case "#FFA800":
-            return "sun";
-        case "#FDD636":
-            return "yellow";
-        case "#7EED56":
-            return "lime";
-        case "#219200":
-            return "green";
-        case "#811E9F":
-            return "purple";
-        case "#FD90DA":
-            return "pink";
-        case "#D4D7D9":
-            return "light_gray";
-        case "#898D90":
-            return "gray";
-        case "#FFFFFF":
-            return "white";
-        case "#CB3234":
-            return "pure_red";
-        case "#A18594":
-            return "pastel_violet";
-        case "#015D52":
-            return "opal_green";
-        case "#ED760E":
-            return "yellow_orange";
-        default:
-            return "unknown";
-    }
+    var colorString = colors.get(color.toUpperCase());
+    return colorString;
 }
 
 // Coords of the top left corner of the picture
 // this point will be the (0, 0) point of the matrix
 // (1, 1) will be the point at the right of the top left corner
-const offset_x = 0; 
-const offset_y = 19;
+const offset_x = 48; 
+const offset_y = 48;
 
 // Matrix representing the picture to draw
 const colorsMatrix = [
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#000000"], 
-    ["#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#00CCC0", "#000000"], 
-    ["#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#000000"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"]
+    ["#FFFFFF", "lul"],
+    ["lul", "#FFFFFF"]
     ];
 const height = colorsMatrix.length;
 const width = colorsMatrix[0].length;
