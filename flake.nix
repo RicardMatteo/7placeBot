@@ -21,7 +21,7 @@
       {
         packages = {
           myapp = poetry2nix.mkPoetryApplication {
-            projectDir = self;
+            projectDir = ./.;
 
             overrides = poetry2nix.overrides.withDefaults (self: super: {
                   helium = super.helium.overridePythonAttrs(oldAttrs: {
@@ -32,7 +32,6 @@
 
             postFixup = ''
               wrapProgram $out/bin/r7placebot --prefix PATH : ${pkgs.lib.makeBinPath ( with pkgs; [ chromium chromedriver ])}
-              cp $out/bin/r7placebot $out/bin/python3.11-r7placebot
             '';
           };
           default = self.packages.${system}.myapp;
