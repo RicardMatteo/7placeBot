@@ -4,5 +4,10 @@
 Install the dependencies : `poetry install`.
 
 ## Setup
-Put your login and your password in ``credentials.txt``.
+
+```bash
+cp  .env.example .env
+```
+
+Put your login and your password in ``.env``.
 Run ``poetry run python3 draw.py``.
