@@ -181,8 +181,8 @@ function colorAssociation(color) {
 // Coords of the top left corner of the picture
 // this point will be the (0, 0) point of the matrix
 // (1, 1) will be the point at the right of the top left corner
-const offset_x = 0; 
-const offset_y = 0;
+const offset_x = 50; 
+const offset_y = 50;
 
 // Matrix representing the picture to draw
 const colorsMatrix = MATRIX_TO_DRAW;

@@ -1,24 +1,21 @@
 from helium import *
 import time
+import os
 from imgToMatrix import getHexMatrix
 
 # Helium script to draw the image on the canvas of the website place.inpt.fr
 
-# read_credentials: str -> (str, str)
-def read_credentials(file_path):
-    with open(file_path, "r") as file:
-        username = file.readline().strip()
-        password = file.readline().strip()
-    return username, password
+# Fonction pour lire les identifiants depuis un fichier
+def cli_arg_or(key, ask_message):
+    if (arg := os.getenv(key)) is not None and arg != "":
+        return arg
+    return input(ask_message)
 
-# Chemin du fichier contenant les identifiants
-credentials_file = ".env"
-
-# Read the credentials from the file
-username, password = read_credentials(credentials_file)
+username = cli_arg_or("USERNAME", "Username: ")
+password = cli_arg_or("PASSWORD", "Password: ")
 
 # Open the website in a new browser window
-driver = start_chrome('place.inpt.fr', headless=False)
+driver = start_firefox('place.inpt.fr', headless=True)
 
 # Log in to the website
 write(username, into='Username')
@@ -33,7 +30,7 @@ with open("draw.js", "r") as file:
     javascript_code = file.read()
 
 # Get the hex matrix of the image
-hex_matrix = str(getHexMatrix("mario.png"))
+hex_matrix = str(getHexMatrix("astro.png"))
 
 # Replace the placeholder in the JavaScript code with the hex matrix
 javascript_code = javascript_code.replace("MATRIX_TO_DRAW", hex_matrix)
@@ -43,3 +40,7 @@ javascript_code = javascript_code.replace("MATRIX_TO_DRAW", hex_matrix)
 driver.execute_script(javascript_code)
 
 print("Drawing")
+
+while(True):
+    time.sleep(1000)
+
