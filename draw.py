@@ -1,40 +1,45 @@
 from helium import *
 import time
-# author:
-#  - mricard
+from imgToMatrix import getHexMatrix
 
-# Ce script utilise la bibliothèque Helium pour automatiser le dessin sur le site place.inpt.fr
+# Helium script to draw the image on the canvas of the website place.inpt.fr
 
-# Fonction pour lire les identifiants depuis un fichier
+# read_credentials: str -> (str, str)
 def read_credentials(file_path):
     with open(file_path, "r") as file:
         username = file.readline().strip()
         password = file.readline().strip()
     return username, password
 
-# Chemin du fichier contenant les identifiants
+# Path to the file containing the credentials
 credentials_file = "credentials.txt"
 
-# Lecture des identifiants depuis le fichier
+# Read the credentials from the file
 username, password = read_credentials(credentials_file)
 
-# Démarrage du navigateur
+# Open the website in a new browser window
 driver = start_chrome('place.inpt.fr', headless=False)
 
-# Saisie du nom d'utilisateur et du mot de passe, puis connexion
+# Log in to the website
 write(username, into='Username')
 write(password, into='Password')
 click('Login')
 
-# Attendre quelques secondes pour que la page se charge
-time.sleep(5)  # Attendre 5 secondes (vous pouvez ajuster cette valeur si nécessaire)
+# Wait for the page to load
+time.sleep(5)
 
-# Charger le contenu du fichier JavaScript
+# Load the JavaScript code from the file
 with open("draw.js", "r") as file:
     javascript_code = file.read()
 
-print(javascript_code)
-# Exécuter le code JavaScript dans la console
+# Get the hex matrix of the image
+hex_matrix = str(getHexMatrix("mario.png"))
+
+# Replace the placeholder in the JavaScript code with the hex matrix
+javascript_code = javascript_code.replace("MATRIX_TO_DRAW", hex_matrix)
+
+
+# Execute the JavaScript code
 driver.execute_script(javascript_code)
 
 print("Drawing")

@@ -1,4 +1,4 @@
-//colors hashmap
+// Colors hashmap
 const colors = new Map([
     ["#000000", "black"],
     ["#0F5AA6", "blue"],
@@ -74,7 +74,7 @@ async function getPixelInfo(coord_x, coord_y) {
     
     const response = await fetch(`https://place.inpt.fr/api/v1/pixel?coord_x=${coord_x}&coord_y=${coord_y}`);
     if (!response.ok) {
-        throw new Error('Erreur lors de la récupération des informations du pixel');
+        throw new Error('Error getting pixel info');
     }
     const pixelInfo = await response.json();
     return pixelInfo;
@@ -131,7 +131,7 @@ async function caclDiff(currentMatrix) {
 
 // Draw the picture
 async function draw() {
-    console.log('Démarrage du dessin...');
+    console.log('Drawing...');
     var i = 0;
     slowstart = 100;
     while (true) {
@@ -147,13 +147,13 @@ async function draw() {
             //console.log(currentMatrix);
             const diff = await caclDiff(currentMatrix);
             if (diff.length == 0) {
-                console.log("Dessin terminé");
+                console.log("drawing finished");
                 break;
             }
             const coords = diff[Math.floor(Math.random()*diff.length)];
             const x = coords.j;
             const y = coords.i;
-            console.log("Coordonnées : x =", x, ", y =", y);
+            console.log("Coords : x =", x, ", y =", y);
             // Place a pixel if we can/need to
             if (canPlace(x, y) || i > 100) {
                 slowstart = 100;
@@ -167,7 +167,7 @@ async function draw() {
             }
 
         } catch (error) {
-            console.log('Erreur:', error.message);
+            console.error('Error:', error.message);
         }       
     }
 }
@@ -182,47 +182,14 @@ function colorAssociation(color) {
 // this point will be the (0, 0) point of the matrix
 // (1, 1) will be the point at the right of the top left corner
 const offset_x = 0; 
-const offset_y = 30;
+const offset_y = 0;
 
 // Matrix representing the picture to draw
-const colorsMatrix = [
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000"],
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#000000"], 
-    ["#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#00CCC0", "#000000"], 
-    ["#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#000000"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#00CCC0", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#00CCC0", "#000000", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"], 
-    ["#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#000000", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6", "#0F5AA6"]
-    ];
+const colorsMatrix = MATRIX_TO_DRAW;
 const height = colorsMatrix.length;
 const width = colorsMatrix[0].length;
+// Default size of the map
 var dimm = 50;
-console.log(colorsMatrix);
 
 const cooldown = 27000; // In milliseconds
 

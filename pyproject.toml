@@ -8,6 +8,8 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.11"
 helium = "^5.0.0"
+pillow = "^10.2.0"
+numpy = "^1.26.4"
 
 
 [build-system]
