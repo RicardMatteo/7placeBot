@@ -160,3 +160,11 @@ cython_debug/
 #.idea/
 
 .env
+
+# ignore credentials
+7placebot/credentials.txt
+credentials.txt
+
+# ignore nix build artifacts
+result
+result/
