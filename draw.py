@@ -11,8 +11,8 @@ def read_credentials(file_path):
         password = file.readline().strip()
     return username, password
 
-# Path to the file containing the credentials
-credentials_file = "credentials.txt"
+# Chemin du fichier contenant les identifiants
+credentials_file = ".env"
 
 # Read the credentials from the file
 username, password = read_credentials(credentials_file)
