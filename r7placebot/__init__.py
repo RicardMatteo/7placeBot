@@ -15,7 +15,7 @@ def read_credentials(file_path):
 
 def main():
     # Chemin du fichier contenant les identifiants
-    credentials_file = "credentials.txt"
+    credentials_file = ".env"
 
     # Lecture des identifiants depuis le fichier
     username, password = read_credentials(credentials_file)
