@@ -13,6 +13,9 @@ def cli_arg_or(key, ask_message):
 
 username = cli_arg_or("USERNAME", "Username: ")
 password = cli_arg_or("PASSWORD", "Password: ")
+image = cli_arg_or("IMAGE", "Image you want to draw: ")
+offsetX = cli_arg_or("OFFSET_X", "Offset X: ")
+offsetY = cli_arg_or("OFFSET_Y", "Offset Y: ")
 
 # Open the website in a new browser window
 driver = start_firefox('place.inpt.fr', headless=True)
@@ -30,10 +33,12 @@ with open("draw.js", "r") as file:
     javascript_code = file.read()
 
 # Get the hex matrix of the image
-hex_matrix = str(getHexMatrix("astro.png"))
+hex_matrix = str(getHexMatrix("/images/" + image))
 
 # Replace the placeholder in the JavaScript code with the hex matrix
 javascript_code = javascript_code.replace("MATRIX_TO_DRAW", hex_matrix)
+javascript_code = javascript_code.replace("OFFSET_X", offsetX)
+javascript_code = javascript_code.replace("OFFSET_Y", offsetY)
 
 
 # Execute the JavaScript code

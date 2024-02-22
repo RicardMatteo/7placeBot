@@ -2,3 +2,5 @@ services:
   7placebot:
     build: .
     env_file: .env
+    volumes:
+      - ./images/:/images 
