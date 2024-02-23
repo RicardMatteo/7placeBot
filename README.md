@@ -13,12 +13,15 @@ Install the dependencies : `poetry install`. (not needed if you wanna use docker
 ```bash
 cp  .env.example .env
 ```
-Then fill the `.env` file with your credentials ans all the options.
+Then fill the `.env` file with your credentials and all the options (image name, offset...).
+Warning: if you run in docker you need to keep `HEADLESS=y`
 
 ### Classique
 
-source your `.env` and then run ``poetry run python3 draw.py``.
-
+source your `.env` and then run 
+```bash
+poetry run python3 ./7placebot/draw.py
+```.
 
 ### Docker
 

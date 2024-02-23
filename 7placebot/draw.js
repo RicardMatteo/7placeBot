@@ -191,7 +191,7 @@ const width = colorsMatrix[0].length;
 // Default size of the map
 var dimm = 50;
 
-const cooldown = 27000; // In milliseconds
+const cooldown = 17000; // In milliseconds
 
 // Start drawing in 3 seconds
 setTimeout(draw, 3000);

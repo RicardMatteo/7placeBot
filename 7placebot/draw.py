@@ -16,9 +16,10 @@ password = cli_arg_or("PASSWORD", "Password: ")
 image = cli_arg_or("IMAGE", "Image you want to draw: ")
 offsetX = cli_arg_or("OFFSET_X", "Offset X: ")
 offsetY = cli_arg_or("OFFSET_Y", "Offset Y: ")
+headless = cli_arg_or("HEADLESS", "Headless (y/n) (default: y): ")
 
 # Open the website in a new browser window
-driver = start_firefox('place.inpt.fr', headless=True)
+driver = start_firefox('place.inpt.fr', headless=not (headless == "n"))
 
 # Log in to the website
 write(username, into='Username')
@@ -29,12 +30,19 @@ click('Login')
 time.sleep(5)
 
 # Load the JavaScript code from the file
-with open("draw.js", "r") as file:
-    javascript_code = file.read()
+try:
+    with open("draw.js", "r") as file:
+        javascript_code = file.read()
+except FileNotFoundError:
+    with open("./7placebot/draw.js", "r") as file:
+        javascript_code = file.read()
 
 # Get the hex matrix of the image
-hex_matrix = str(getHexMatrix("/images/" + image))
-
+try:
+    hex_matrix = str(getHexMatrix("/images/" + image))
+except:
+    hex_matrix = str(getHexMatrix("./images/"+image))
+    
 # Replace the placeholder in the JavaScript code with the hex matrix
 javascript_code = javascript_code.replace("MATRIX_TO_DRAW", hex_matrix)
 javascript_code = javascript_code.replace("OFFSET_X", offsetX)
