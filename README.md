@@ -21,7 +21,7 @@ Warning: if you run in docker you need to keep `HEADLESS=y`
 source your `.env` and then run 
 ```bash
 poetry run python3 ./7placebot/draw.py
-```.
+```
 
 ### Docker
 
